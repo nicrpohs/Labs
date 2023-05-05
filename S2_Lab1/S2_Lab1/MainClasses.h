@@ -81,6 +81,7 @@ namespace isp
 		Tutor  tutor;
 		isp::Date date;
 		GradeRecord* records;//массив для таблицы со студентами и оценками
+		static const unsigned int sizedelta = 3;
 		unsigned int count;//колво записей студентов
 		unsigned int capacity;//размер массива
 		const std::string FormTableCapHorLine() const;
@@ -90,8 +91,7 @@ namespace isp
 		GradeRegister();
 		GradeRegister(unsigned int size);
 		~GradeRegister();
-		void rebuffer(unsigned int newsize, unsigned int sizedelta = 0);//увеличим размер массива
-		bool add(GradeRecord);         // добавить строку ведомости (если памяти не хватает - увеличить)
+		bool add(GradeRecord&);         // добавить строку ведомости (если памяти не хватает - увеличить)
 		bool del(GradeRecord&);      // удалить визстроку ведомости 
 		bool del(unsigned int strNum);      // удалить строку ведомости  по номеру строки
 		void set_grade(unsigned int strNum, unsigned int  grade);//установить оценку для студента в выбранной строке

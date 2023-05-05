@@ -4,8 +4,6 @@
 //using namespace std;
 namespace isp
 {
-	
-	
 #pragma region class Student
 	
 	//Конструкторы
@@ -254,32 +252,58 @@ namespace isp
 	}
 	GradeRegister::GradeRegister(unsigned int capacity)
 	{
+		if(capacity>0)
+		{ 
 		records = new GradeRecord[capacity];
 		this->capacity = capacity;
 		this->count = 0;
-
+		}
+		else
+		{
+			records = nullptr;
+			count = 0;
+			capacity = 0;
+		}
 	}
 	GradeRegister::~GradeRegister()
 	{
 		if (records != nullptr) delete[] records;
 	}
-	void GradeRegister::rebuffer(unsigned int newsize, unsigned int sizedelta)
-	{
-		if (records != nullptr) delete[] records;
-		capacity = newsize + sizedelta;
-		records = new GradeRecord[capacity];
-	}
-	bool GradeRegister::add(GradeRecord record)
+	bool GradeRegister::add(GradeRecord& new_record)
 	{
 		if (capacity > count)
 		{
-			records[count] = record;
+			records[count] = new_record;
 			count++;
+		}
+		else if(count)//записи есть, массив надо скопировать-расширить
+		{
+			capacity += sizedelta;
+			GradeRecord* tmp = new GradeRecord[capacity];//в текущем масс. count элементов
+			int i;
+			for (i = 0; i < count; ++i) tmp[i] = records[i];
+			count++;
+			tmp[i] = new_record;
+			delete[] records;
+			//records = new GradeRecord[capacity];
+
+			//for (i = 0; i < count; ++i) records[i]=tmp[i]  ;
+			records = tmp;
+			//delete[] tmp;
+			
+
 		}
 		else
 		{
+			capacity += sizedelta;
+			records = new GradeRecord[capacity];
+			records[count] = new_record;
+			++count;
+
+
 
 		}
+		
 		return true;
 	}
 

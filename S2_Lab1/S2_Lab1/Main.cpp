@@ -7,17 +7,16 @@ int main()
 	
 
 	Student st("Paykov", "Ivan", "Serg", "1234", "w-12135");
-	Student st1("Bonch-Bruevich", "Solomonsash", "OzyOglyevich","1234", "w-45678");
-	Student st2("Usova", "Marina", "Batkovna", "1234", "x-87962");
+	
 
-	GR.set_student(st);
+	GR.set_student(Student("Paykov", "Lisa", "Serg", "1234", "w-12135"));
 	GR.set_grade(5);
 	
 	
 	/*cout << GR << endl;
 	cout << GR1 << endl;*/
 	
-	GradeRegister G_register(10);
+	GradeRegister G_register;
 	isp::Date d(12, 12, 2012);
 	G_register.set_date(d);
 	Tutor t("Petrov", "Igor", "Alekseevich","assist","my@milo.yu");
