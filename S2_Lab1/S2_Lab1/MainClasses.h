@@ -4,10 +4,11 @@
 #include "BaseClasses.h"
 namespace isp
 {
-	const unsigned char FioWidht = 40;//ширина колонки FIO для консольной печати
-	const unsigned char GradeWidht = 5;//ширина колонки FIO для консольной печати
-	const unsigned char OtherWidht = 12;//ширина других колонок для консольной печати
-	const unsigned char tableWidht = FioWidht + GradeWidht +2* OtherWidht + 5;
+	const unsigned char FioWidht = 41;//ширина колонки FIO для консольной печати
+	const unsigned char GradeWidht = 7;//ширина колонки FIO для консольной печати
+	const unsigned char OtherWidht = 14;//ширина других колонок для консольной печати
+	const unsigned char StrNumWidht = 3;//ширина других колонок для консольной печати
+	const unsigned char tableWidht = StrNumWidht+FioWidht + GradeWidht +2* OtherWidht + 6;
 	class Student :public Person
 	{
 	private:
@@ -71,6 +72,7 @@ namespace isp
 		friend std::ostream& operator<<(std::ostream& os, const GradeRecord& g);
 		friend std::istream& operator>>(std::istream& is, GradeRecord& g);
 		GradeRecord& operator=(const GradeRecord& g);
+		bool operator==(const GradeRecord& s) const;
 	};
 
 	class GradeRegister //Зачетная ведомость
@@ -92,8 +94,8 @@ namespace isp
 		GradeRegister(unsigned int size);
 		~GradeRegister();
 		bool add(GradeRecord&);         // добавить строку ведомости (если памяти не хватает - увеличить)
-		bool del(GradeRecord&);      // удалить визстроку ведомости 
-		bool del(unsigned int strNum);      // удалить строку ведомости  по номеру строки
+		bool del(GradeRecord&);      // удалить первую подходящую строку ведомости 
+		bool del(unsigned int);      // удалить строку ведомости  по номеру строки
 		void set_grade(unsigned int strNum, unsigned int  grade);//установить оценку для студента в выбранной строке
 		void set_grade(Student& student, unsigned int  grade);//установить оценку для выбранного студента 
 		void set_university(std::string university);
@@ -104,9 +106,11 @@ namespace isp
 		std::string get_subject();
 		const Tutor get_tutor() const;
 		const isp::Date get_date() const;
+		unsigned int Count() { return count; };
 		friend std::ostream& operator<<(std::ostream& os, const GradeRegister& g);
 		friend std::istream& operator>>(std::istream& is, GradeRegister& g);
-		GradeRegister& operator=(const GradeRegister& g); //ведомость смысл копирования?
+		GradeRegister& operator=(const GradeRegister& g); 
+		GradeRecord& get_grade_record(unsigned int index);
 	};
 
 }

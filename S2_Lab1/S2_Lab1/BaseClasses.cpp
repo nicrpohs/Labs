@@ -153,7 +153,20 @@ std::ostream& isp::operator<<(std::ostream& os, const Date& date)
 
 std::istream& isp::operator>>(std::istream& is, Date& d)
 {
-	return is >> d.day >> d.month >> d.year;
+	string tmp;
+	std::cout << "Ввод даты..."<<'\n';
+	std::cout << "день:";
+	is >> tmp;
+	int day = atoi(tmp.c_str());
+	std::cout << "месяц:";
+	is >> tmp;
+	int month = atoi(tmp.c_str());
+	std::cout << "год:";
+
+	is >> tmp;
+	int year = atoi(tmp.c_str());
+	d.SetDate(day,month,year);
+	return  is;
 
 }
 

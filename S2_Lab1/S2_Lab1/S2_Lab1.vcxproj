@@ -130,10 +130,12 @@
     <ClCompile Include="BaseClasses.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainClasses.cpp" />
+    <ClCompile Include="ProgUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseClasses.h" />
     <ClInclude Include="MainClasses.h" />
+    <ClInclude Include="ProgUI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

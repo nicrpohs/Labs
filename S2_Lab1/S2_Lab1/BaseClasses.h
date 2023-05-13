@@ -77,7 +77,8 @@ public:
 	Person(std::string surname, std::string name, std::string patronymic);
 	Person(const Person& p);
 	~Person();
-	const std::string getFIO() const;
+	const std::string getFIO() const
+		;
 	void setFIO(std::string surname, std::string name, std::string patronymic);
 	//переопределение операторов
 	Person& operator=(const Person& p);

@@ -93,16 +93,16 @@ namespace isp
 
 	std::istream& operator>>(std::istream& is, Student& s)
 	{
-		std::cout << " Entering student..." << std::endl;
-		std::cout << "  Surname:";
+		std::cout << " Ввод студента..." << std::endl;
+		std::cout << "  Фамилия:";
 		is >> s.surname;
-		std::cout << "  Name:";
+		std::cout << "  Имя:";
 		is >> s.name;
-		std::cout << "  Patronymic:";
+		std::cout << "  Отчество:";
 		is >> s.patronymic;
-		std::cout << "  Group:";
+		std::cout << "  Группа:";
 		is >> s.group;
-		std::cout << "  Gradebook:";
+		std::cout << "  Номер зачетной книжки:";
 		is >> s.gradebook;
 		return is;
 
@@ -130,7 +130,7 @@ namespace isp
 	const std::string Tutor::to_string() const
 	{
 		std::string rez = getFIO();
-		if (post != "") rez += "\tpost: " + post;
+		if (post != "") rez += "\tдолжность: " + post;
 		if (email != "") rez += "\temail: " + email;
 		return rez;
 	}
@@ -160,16 +160,16 @@ namespace isp
 	}
 	std::istream& operator>>(std::istream& is, Tutor& t)
 	{
-		std::cout << " Entering tutor..." << std::endl;
-		std::cout << "  Surname:";
+		std::cout << " Ввод преподавателя..." << std::endl;
+		std::cout << "  Фамилия:";
 		is >> t.surname;
-		std::cout << "  Name:";
+		std::cout << "  Имя:";
 		is >> t.name;
-		std::cout << "  Patronymic:";
+		std::cout << "  Отчество:";
 		is >> t.patronymic;
 		std::cout << "  Email:";
 		is >> t.email;
-		std::cout << "  Post:";
+		std::cout << "  Должность:";
 		is >> t.post;
 		return is;
 
@@ -215,6 +215,14 @@ namespace isp
 		this->grade = g.grade;
 		return *this;
 	}
+	bool GradeRecord::operator==(const GradeRecord& g) const
+	{
+		bool rez = false;
+		if (this == &g) rez = true;//сам на себя
+		if (this->student==g.student) rez = true;
+		return rez;
+	}
+
 	std::ostream& operator<<(std::ostream& os, const GradeRecord& g)
 	{
 		char sp = ' ';
@@ -228,14 +236,15 @@ namespace isp
 	std::istream& operator>>(std::istream& is, GradeRecord& g)
 	{
 		int grade;
-		std::cout << "New grade record: " << std::endl;
+		std::string s_grade;
+		std::cout << "Новая строка ведомости: " << std::endl;
 		is >> g.student;
-		std::cout << " Enter grade:";
-		is >> grade;
-
+		std::cout << " Введите оценку:";
+		is >> s_grade;
+		grade=atoi(s_grade.c_str());
 		if (grade > 0 && grade < 6)
 			g.grade = grade;
-		else grade = 0;
+		else g.grade = 0;
 		return is;
 
 	}
@@ -282,16 +291,10 @@ namespace isp
 			GradeRecord* tmp = new GradeRecord[capacity];//в текущем масс. count элементов
 			int i;
 			for (i = 0; i < count; ++i) tmp[i] = records[i];
+			tmp[count] = new_record;
 			count++;
-			tmp[i] = new_record;
 			delete[] records;
-			//records = new GradeRecord[capacity];
-
-			//for (i = 0; i < count; ++i) records[i]=tmp[i]  ;
 			records = tmp;
-			//delete[] tmp;
-			
-
 		}
 		else
 		{
@@ -299,14 +302,40 @@ namespace isp
 			records = new GradeRecord[capacity];
 			records[count] = new_record;
 			++count;
-
-
-
 		}
-		
 		return true;
 	}
+	bool GradeRegister::del(GradeRecord& del_record)
+	{
+		if (!count) return false;
+		int del_index = -1;
+		for (int i = 0; i < count; ++i)
+		{
+			if (records[i] == del_record) { del_index = i; break; };
+		}
+		if (del_index < 0)return false;
+		this->del(del_index);
+	}
+	bool GradeRegister::del(unsigned int del_index)
+	{
+		if (del_index < 0|| del_index>=count)return false;
+		capacity --;
+		GradeRecord* tmp = new GradeRecord[capacity];//в текущем масс. count элементов
 
+		for (int i = 0, j = 0; i < count; ++i)
+		{
+			if (i != del_index)
+			{
+				tmp[j] = records[i];
+				++j;
+			}
+		}
+
+		count--;
+		delete[] records;
+		records = tmp;
+		return true;
+	}
 	void GradeRegister::set_university(std::string university)
 	{
 		this->university = university;
@@ -360,20 +389,23 @@ namespace isp
 
 	std::ostream& operator<<(std::ostream& os, const GradeRegister& g_reg)
 	{
-		std::string title = "FIO";
-		os << std::endl << "\tGRADE REGISTER\n\n";
-		os << "University: " << g_reg.university << std::endl;
-		os << "Subject: " << g_reg.subject << std::endl;
-		os << "Tutor: " << g_reg.tutor << std::endl;
-		os << "Date: " << g_reg.date << std::endl;
+		std::string title ;
+		os << std::endl << "\tЗАЧЕТНАЯ ВЕДОМОСТЬ\n\n";
+		os << "Учебное заведение: " << g_reg.university << std::endl;
+		os << "Учебная дисциплина: " << g_reg.subject << std::endl;
+		os << "Преподаватель: " << g_reg.tutor << std::endl;
+		os << "Дата: " << g_reg.date << std::endl;
 		//Шапка таблицы
 		os << g_reg.FormTableCapHorLine() << std::endl;
+		title = " № ";
+		os << "|" << std::setw(StrNumWidht) << title ;
+		title = "  ФИО";
 		os << "|" << std::setw(FioWidht) << std::left << title << "|";
-		title = "Group";
+		title = "Группа    ";
 		os << std::setw(OtherWidht) << std::right << title << "|";
-		title = "Gradebook";
+		title = "Зачет.книжка";
 		os << std::setw(OtherWidht) << std::right << title << "|";
-		title = "Grade";
+		title = "Оценка";
 		os << std::setw(GradeWidht) << std::right << title << "|" << std::endl;
 		os << g_reg.FormTableCapHorLine() << std::endl;
 		
@@ -381,6 +413,7 @@ namespace isp
 		{
 			for (unsigned int i = 0; i < g_reg.count; i++)
 			{
+				os << "|" << std::setw(StrNumWidht) << i + 1 ;
 				os << g_reg.records[i]<<std::endl;
 				os << g_reg.FormTableCapHorLine() << std::endl;
 			}
@@ -389,5 +422,11 @@ namespace isp
 		os << "\t\t______________" << g_reg.get_tutor().getFIO()<<"\n\n";
 		return os;
 	}
+
+	GradeRecord& GradeRegister::get_grade_record(unsigned int index)
+	{
+		return *(records + index);
+	}
+
 #pragma endregion class GradeRegister
 }
